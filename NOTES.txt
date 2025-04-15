@@ -1,0 +1,34 @@
+Aplikacja do zarzadzania produktami, klientami i zamowieniami.
+
+Struktura danych:
+
+Produkty: Każdy produkt posiada swoje unikalne ID, nazwę, kategorię
+(zdefiniowaną w formie enum) oraz cenę jako Decimal.
+
+Klienci: Każdy klient ma swoje ID, imię, nazwisko, wiek oraz adres e-mail.
+
+Zamówienia: Każde zamówienie składa się z ID zamówienia, ID klienta, ID produktu,
+liczby zakupionych sztuk, wysokości zniżki oraz rodzaju wysyłki (również zdefiniowanego
+jako enum).
+
+Zrealizujemy komunikacje z plikami json, ktore przechowuja informacje na temat
+powyzszych struktur danych. Zastosujemy podejscie z poprzednich etapow naszej nauki,
+czyli wydzielimy:
+- model danych
+- walidacja danych
+- konwersja danych
+- repozytoria
+- warstwa serwisowa (o niej powiemy pozniej)
+- testowanie
+
+W pierwszej kolejnosci pobierzemy dane ze wszystkich plikow. Potem pobrane dane
+zorganizujemy w formie dict, ktorego kluczem bedzie customer, a wartością będzie
+dict, zawierający jako klucz produkt, a jako wartosc, ile razy ten produkt kupil
+danyc customer, bedacy kluczem.
+
+{
+    Customer('C'): {
+        Product('A'): 3,
+        Product('B'): 2,
+    }
+}

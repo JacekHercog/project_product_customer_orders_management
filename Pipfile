@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+
+[dev-packages]
+pytest = "*"
+pytest-cov = "*"
+pytest-html = "*"
+pyright = "*"
+mypy = "*"
+
+[requires]
+python_version = "3.12"
+
+[scripts]
+start = "python main.py"
+check = "pyright main.py"
+check_mypy = "mypy src tests"
+test = "pytest --cov=src --cov-report=html"
