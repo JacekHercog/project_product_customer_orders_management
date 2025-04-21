@@ -4,8 +4,7 @@ from src.model import (
     Customer,
     Order,
     ProductCategory,
-    ShippingMethod,
-    CustomerDataDict
+    ShippingMethod
 )
 import pytest
 

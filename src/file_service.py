@@ -27,7 +27,7 @@ class FileWriter[T]:
         Write data to a file.
         """
         with open(file_name, 'w', encoding='utf-8') as file:
-            json.dump(data, file, indent=4)
+            json.dump(data, file, ensure_ascii=False, indent=4)
 
 class ProductJsonFileWriter(FileWriter[ProductDataDict]):
     pass

@@ -1,15 +1,11 @@
-import pytest
 from decimal import Decimal
 from src.model import (
     Product,
     Customer,
-    Order,
-    ProductCategory,
-    ShippingMethod,
-    CustomerDataDict
+    Order
 )
 
-def test_product_to_dict(product1) -> None:
+def test_product_to_dict(product1: Product) -> None:
     data = product1.to_dict()
     expected_dict = {
         "id": 1,
@@ -19,7 +15,7 @@ def test_product_to_dict(product1) -> None:
     }
     assert data == expected_dict
 
-def test_customer_to_dict(customer1) -> None:
+def test_customer_to_dict(customer1: Customer) -> None:
     data= customer1.to_dict()
     excepted_dict = {
         "id": 1,
@@ -30,7 +26,7 @@ def test_customer_to_dict(customer1) -> None:
     }
     assert data == excepted_dict
 
-def test_order_to_dict(order1) -> None:
+def test_order_to_dict(order1: Order) -> None:
     data = order1.to_dict()
     expected_dict = {
         "id": 1,
