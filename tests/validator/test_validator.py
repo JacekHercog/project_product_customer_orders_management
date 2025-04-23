@@ -86,38 +86,62 @@ def test_validate_string_with_regex(value: str, pattern: str, expected: bool) ->
     assert Validator.validate_string_with_regex(value, pattern) == expected
 
 
-# @pytest.mark.parametrize("data, expected", [
-#     ({"id": 1, "name": "Laptop", "category": "Electronics", "price": "121.12"}, True),
-#     ({"id": 2, "name": "Laptop", "category": "Electronics", "price": "0.0"}, False)
-# ])
 @pytest.mark.parametrize("data, expected", [
-    ({"price": "121.12"}, True),
-    ({"price": "-1.0"}, False),
-    ({"price": "0"}, False),
-    ({"price": "abc"}, False)
+    ({"id": 1, "name": "AA", "category": "Electronics", "price": "121.12"}, True),
+    ({"id": 12, "name": "AA__", "category": "Books", "price": "1.12"}, True),
+    ({"id": 2, "name": "BB", "category": "Electronics","price": "-1.0"}, False),
+    ({"id": 3, "name": "CC", "category": "Clothing","price": "0"}, False),
+    ({"id": 4, "name": "DD", "category": "Books","price": "abc"}, False)
 ])
 def test_ProductDataDictValidator(data:ProductDataDict, expected: bool) -> None:
     validator = ProductDataDictValidator()
     assert validator.validate(data) == expected
- 
 
+@pytest.mark.parametrize("data, expected", [
+    ({ "name": "AA", "category": "Electronics", "price": "121.12"}, False),
+    ({"id": 12, "category": "Books", "price": "1.12"}, False),
+    ({"id": 2, "name": "BB", "price": "1.0"}, False),
+    ({"id": 3, "name": "CC", "category": "Clothing"}, False)
+])
+def test_ProductDataDictValidator_missing_keys(data: ProductDataDict, expected:bool) -> None:
+    validator = ProductDataDictValidator()
+    assert validator.validate(data) == expected
+    
 @pytest.mark.parametrize("data, min_age, max_age, expected", [
-    ({"age": 20}, 18, 65, True),
-    ({"age": 86}, 18, 86, True),
-    ({"age": 86}, 18, 65, False)
+    ({"id": 1, "first_name": "J", "last_name": "JJ", "age": 19, "email": "j@gmail.com"}, 18, 65, True),
+    ({"id": 1, "first_name": "J", "last_name": "JJ", "age": 86, "email": "j@gmail.com"}, 18, 86, True),
+    ({"id": 1, "first_name": "J", "last_name": "JJ", "age": 86, "email": "j@gmail.com"}, 18, 65, False)
 ])
 def test_CustomerDataDictValidator(data: CustomerDataDict, min_age: int, max_age: int, expected: bool  ) -> None:
-    validator = CustomerDataDictValidator(min_age, max_age)  
+    validator = CustomerDataDictValidator(min_value=min_age, max_value=max_age)  
     assert validator.validate(data) == expected
 
 @pytest.mark.parametrize("data, expected", [
-    ({"id": 1, "product_id": 1, "customer_id": 1, "discount": "0.5"}, True),
-    ({"id": 2, "product_id": 2, "customer_id": 2, "discount": "-0.5"}, False),
-    ({"id": 3, "product_id": 2, "customer_id": 2, "discount": "0.0"}, True),
-    ({"id": 4, "product_id": 2, "customer_id": 2, "discount": "1.0"}, True),
-    ({"id": 5, "product_id": 2, "customer_id": 2, "discount": "abc"}, False)
+    ({"id": 1, "first_name": "John", "last_name": "Doe", "email": "john.doe@example.com"}, False),
+    ({"first_name": "John", "last_name": "Doe", "age": 30, "email": "john.doe@example.com"}, False),
+    ({"id": 1, "first_name": "John", "age": 30, "email": "john.doe@example.com"}, False),
+])
+def test_customer_data_dict_validator_missing_keys(data: CustomerDataDict, expected: bool):
+    validator = CustomerDataDictValidator()
+    assert validator.validate(data) == expected
+
+@pytest.mark.parametrize("data, expected", [
+    ({"discount": "0.5"}, True),
+    ({"discount": "-0.5"}, False),
+    ({"discount": "0.0"}, True),
+    ({"discount": "1.0"}, True),
+    ({"discount": "abc"}, False)
 ])
 def test_OrderDataDictValidator(data: OrderDataDict, expected: bool) -> None:
+    validator = OrderDataDictValidator(required_fields=["discount"])
+    assert validator.validate(data) == expected
+
+@pytest.mark.parametrize("data, expected", [
+    ({"id": 1, "customer_id": 1, "product_id": 1, "quantity": 1, "shipping_method": "Standard"}, False),
+    ({"customer_id": 1, "product_id": 1, "discount": "0.1", "quantity": 1, "shipping_method": "Standard"}, False),
+    ({"id": 1, "product_id": 1, "discount": "0.1", "quantity": 1, "shipping_method": "Standard"}, False),
+])
+def test_order_data_dict_validator_missing_keys(data: OrderDataDict, expected: bool):
     validator = OrderDataDictValidator()
     assert validator.validate(data) == expected
     

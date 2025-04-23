@@ -1,5 +1,4 @@
-from abc import ABC, abstractmethod     
-from dataclasses import dataclass               
+from dataclasses import dataclass, field           
 from decimal import Decimal, InvalidOperation
 from enum import Enum
 from typing import Type, override
@@ -15,17 +14,35 @@ from src.model import (
 
 logging.basicConfig(level=logging.INFO)
 
-class Validator[T](ABC):
+@dataclass
+class Validator[T]:
     """
     Abstract base class for validators.
     """
-
-    @abstractmethod
+    required_fields: list[str] = field(default_factory=list)
+                                       
     def validate(self, data: T) -> bool:
         """
         Validate the data.
         """
-        pass
+        return len(self.required_fields) == 0 or self.has_required_keys(data, self.required_fields)
+
+    def has_required_keys(self, data: T, keys: list[str]) -> bool:
+        """
+        Check if the data has the required fields.
+        """
+        missing_keys = []
+        for key in keys:
+            if isinstance(data, dict):
+                if key not in data:
+                    missing_keys.append(key)
+            elif not hasattr(data, key):
+                missing_keys.append(key)        
+        if missing_keys:
+            logging.error(f"Missing keys: {', '.join(missing_keys)}")
+            return False            
+        return True
+    
 
     @staticmethod
     def is_positive(data: int | str) -> bool:
@@ -94,18 +111,27 @@ class Validator[T](ABC):
         # else:
         #     logging.error(f"String '{value}' does not match the regex '{regex}'")
         #     return False
-    
+
+@dataclass    
 class ProductDataDictValidator(Validator[ProductDataDict]):
     """
     Validator for product data.
     """
+
+    def __post_init__(self) -> None:
+        """
+        Initialize the validator.
+        """
+        if len(self.required_fields) == 0:
+            self.required_fields = ["id", "name", "category", "price"]
+
     @override
     def validate(self, data: ProductDataDict) -> bool:
         """
         Validate the product data.
         """
-        # Implement validation logic here
-        return Validator.is_positive(data["price"])
+        return super().validate(data) and Validator.is_positive(data["price"])
+
 
 @dataclass
 class CustomerDataDictValidator(Validator[CustomerDataDict]):
@@ -114,14 +140,20 @@ class CustomerDataDictValidator(Validator[CustomerDataDict]):
     """
     min_value: int = 0
     max_value: int = 65
+    
+    def __post_init__(self) -> None:
+        """
+        Initialize the validator.
+        """
+        if len(self.required_fields) == 0:
+            self.required_fields = ["id", "first_name", "last_name", "age", "email"]
 
     @override
     def validate(self, data: CustomerDataDict) -> bool:
         """
         Validate the customer data.
         """
-        # Implement validation logic here
-        return (
+        return super().validate(data) and (
             Validator.validate_int_in_range(int(data["age"]), self.min_value, self.max_value)  
             # and Validator.is_valid_email(data["email"])
         )
@@ -133,14 +165,20 @@ class OrderDataDictValidator(Validator[OrderDataDict]):
     """
     min_discount: Decimal = Decimal('0.0')
     max_discount: Decimal = Decimal('1.0')
+    
+    def __post_init__(self) -> None:
+        """
+        Initialize the validator.
+        """
+        if len(self.required_fields) == 0:
+            self.required_fields = ["id", "customer_id", "product_id", "quantity", "discount", "shipping_method"]
 
     @override
     def validate(self, data: OrderDataDict) -> bool:
         """
         Validate the order data.
         """
-        # Implement validation logic here
-        return (
+        return super().validate(data) and (
             Validator.validate_decimal_in_range(str(data["discount"]), self.min_discount, self.max_discount)
             # and Validator.is_valid_value_of(data["shipping_method"], ShippingMethod)
         )
