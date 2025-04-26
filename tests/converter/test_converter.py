@@ -38,7 +38,7 @@ from decimal import Decimal
 ])
 def test_product_converter(data: ProductDataDict, product: Product) -> None:
     converter = ProductConverter()
-    converted_product = converter.from_json(data)
+    converted_product = converter.convert(data)
     assert isinstance(converted_product, Product)
     assert converted_product.id == product.id
     assert converted_product.name == product.name
@@ -66,7 +66,7 @@ def test_product_converter(data: ProductDataDict, product: Product) -> None:
 
 def test_customer_converter(data:CustomerDataDict, customer: Customer) -> None:
     converter = CustomerConverter()
-    converted_customers = converter.from_json(data)
+    converted_customers = converter.convert(data)
     assert isinstance(converted_customers, Customer)
     assert converted_customers  == customer
     assert converted_customers.id == customer.id        
@@ -111,7 +111,7 @@ def test_customer_converter(data:CustomerDataDict, customer: Customer) -> None:
 ])
 def test_order_converter(data: OrderDataDict, order: Order) -> None:
     converter = OrderConverter()
-    converted_orders = converter.from_json(data)
+    converted_orders = converter.convert(data)
     assert isinstance(converted_orders, Order)
     assert converted_orders.id == order.id
     assert converted_orders.customer_id == order.customer_id

@@ -1,3 +1,4 @@
+from abc import ABC
 from dataclasses import dataclass, field           
 from decimal import Decimal, InvalidOperation
 from enum import Enum
@@ -15,7 +16,7 @@ from src.model import (
 logging.basicConfig(level=logging.INFO)
 
 @dataclass
-class Validator[T]:
+class AbstractValidator[T](ABC):
     """
     Abstract base class for validators.
     """
@@ -113,7 +114,7 @@ class Validator[T]:
         #     return False
 
 @dataclass    
-class ProductDataDictValidator(Validator[ProductDataDict]):
+class ProductDataDictValidator(AbstractValidator[ProductDataDict]):
     """
     Validator for product data.
     """
@@ -130,11 +131,11 @@ class ProductDataDictValidator(Validator[ProductDataDict]):
         """
         Validate the product data.
         """
-        return super().validate(data) and Validator.is_positive(data["price"])
+        return super().validate(data) and AbstractValidator.is_positive(data["price"])
 
 
 @dataclass
-class CustomerDataDictValidator(Validator[CustomerDataDict]):
+class CustomerDataDictValidator(AbstractValidator[CustomerDataDict]):
     """
     Validator for customer data.
     """
@@ -154,12 +155,12 @@ class CustomerDataDictValidator(Validator[CustomerDataDict]):
         Validate the customer data.
         """
         return super().validate(data) and (
-            Validator.validate_int_in_range(int(data["age"]), self.min_value, self.max_value)  
+            AbstractValidator.validate_int_in_range(int(data["age"]), self.min_value, self.max_value)  
             # and Validator.is_valid_email(data["email"])
         )
     
 @dataclass
-class OrderDataDictValidator(Validator[OrderDataDict]):
+class OrderDataDictValidator(AbstractValidator[OrderDataDict]):
     """
     Validator for order data.
     """
@@ -179,6 +180,6 @@ class OrderDataDictValidator(Validator[OrderDataDict]):
         Validate the order data.
         """
         return super().validate(data) and (
-            Validator.validate_decimal_in_range(str(data["discount"]), self.min_discount, self.max_discount)
+            AbstractValidator.validate_decimal_in_range(str(data["discount"]), self.min_discount, self.max_discount)
             # and Validator.is_valid_value_of(data["shipping_method"], ShippingMethod)
         )

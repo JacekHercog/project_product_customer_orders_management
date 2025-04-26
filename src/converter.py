@@ -4,24 +4,24 @@ from src.model import (ProductDataDict, CustomerDataDict, OrderDataDict,
                        Product, Customer, Order,
                        ProductCategory, ShippingMethod)
 
-class Converter[T, U](ABC):
+class AbstractConverter[T, U](ABC):
     """
     Abstract base class for converters.
     """
 
     @abstractmethod
-    def from_json(self, data: T) -> U:
+    def convert(self, data: T) -> U:
         """
         Convert the data.
         """
         pass
 
-class ProductConverter(Converter[ProductDataDict, Product]):
+class ProductConverter(AbstractConverter[ProductDataDict, Product]):
     """
     Converter for Product.
     """
 
-    def from_json(self, data: ProductDataDict) -> Product:
+    def convert(self, data: ProductDataDict) -> Product:
         """
         Convert the JSON data to a Product object.
         """
@@ -33,12 +33,12 @@ class ProductConverter(Converter[ProductDataDict, Product]):
         )
 
    
-class CustomerConverter(Converter[CustomerDataDict, Customer]):
+class CustomerConverter(AbstractConverter[CustomerDataDict, Customer]):
     """
     Converter for Customer.
     """
 
-    def from_json(self, data: CustomerDataDict) -> Customer:
+    def convert(self, data: CustomerDataDict) -> Customer:
         """
         Convert the JSON data to a Customer object.
         """
@@ -50,12 +50,12 @@ class CustomerConverter(Converter[CustomerDataDict, Customer]):
             email= str(data["email"])   
         )
 
-class OrderConverter(Converter[OrderDataDict, Order]):
+class OrderConverter(AbstractConverter[OrderDataDict, Order]):
     """
     Converter for Order.
     """
 
-    def from_json(self, data: OrderDataDict) -> Order:
+    def convert(self, data: OrderDataDict) -> Order:
         """
         Convert the JSON data to an Order object.
         """

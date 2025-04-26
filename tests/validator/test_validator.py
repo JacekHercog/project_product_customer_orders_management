@@ -1,6 +1,6 @@
 import pytest
 from src.validator import (
-    Validator, ProductDataDictValidator, CustomerDataDictValidator, OrderDataDictValidator
+    AbstractValidator, ProductDataDictValidator, CustomerDataDictValidator, OrderDataDictValidator
 )
 from src.model import (
     ProductCategory, ShippingMethod, ProductDataDict, CustomerDataDict, OrderDataDict
@@ -26,7 +26,7 @@ from email_validator import EmailNotValidError
     ]
 )
 def test_is_positive(value: int, expected: bool) -> None:
-    assert Validator.is_positive(value) == expected
+    assert AbstractValidator.is_positive(value) == expected
 
 @pytest.mark.parametrize("value, enum_class, expected", [
     ("Standard", ProductCategory, False),
@@ -36,7 +36,7 @@ def test_is_positive(value: int, expected: bool) -> None:
     ("EXPREs", ShippingMethod, False),
 ])
 def test_is_valid_value_of(value: str, enum_class: type[Enum], expected: bool) -> None:
-    assert Validator.is_valid_value_of(value, enum_class) == expected
+    assert AbstractValidator.is_valid_value_of(value, enum_class) == expected
     
 @pytest.mark.parametrize("email, expected", 
                          [
@@ -51,7 +51,7 @@ def test_is_valid_value_of(value: str, enum_class: type[Enum], expected: bool) -
 
                          ])
 def test_is_valid_email(email: str, expected: bool) -> None:
-    assert Validator.is_valid_email(email) == expected
+    assert AbstractValidator.is_valid_email(email) == expected
 
 @pytest.mark.parametrize("value, min_value, max_value, expected", [
     (1, 1, 10, True),
@@ -61,7 +61,7 @@ def test_is_valid_email(email: str, expected: bool) -> None:
     
 ])
 def test_validate_int_in_range(value: int, min_value: int, max_value: int, expected: bool) -> None:
-    assert Validator.validate_int_in_range(value, min_value, max_value) == expected
+    assert AbstractValidator.validate_int_in_range(value, min_value, max_value) == expected
 
 
 @pytest.mark.parametrize("value, min_value, max_value, expected", [
@@ -73,7 +73,7 @@ def test_validate_int_in_range(value: int, min_value: int, max_value: int, expec
 ])
 def test_validate_decimal_in_range(value: str, min_value: Decimal, 
                                    max_value: Decimal, expected: bool) -> None:
-    assert Validator.validate_decimal_in_range(value, min_value, max_value) == expected
+    assert AbstractValidator.validate_decimal_in_range(value, min_value, max_value) == expected
 
 @pytest.mark.parametrize("value, pattern, expected", [
     ("abc123", r"^[a-zA-Z0-9]+$", True),
@@ -83,7 +83,7 @@ def test_validate_decimal_in_range(value: str, min_value: Decimal,
     ("ABC", r'[A-Z]+', True)
 ])
 def test_validate_string_with_regex(value: str, pattern: str, expected: bool) -> None:
-    assert Validator.validate_string_with_regex(value, pattern) == expected
+    assert AbstractValidator.validate_string_with_regex(value, pattern) == expected
 
 
 @pytest.mark.parametrize("data, expected", [

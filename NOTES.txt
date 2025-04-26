@@ -18,6 +18,7 @@ czyli wydzielimy:
 - walidacja danych
 - konwersja danych
 - repozytoria
+- repozystorium posrednie, ktore spina dane z repozytoriow ktore juz mamy i potem korzysta z niego service
 - warstwa serwisowa (o niej powiemy pozniej)
 - testowanie
 

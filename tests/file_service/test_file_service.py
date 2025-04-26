@@ -8,6 +8,7 @@ from src.file_service import (
 )
 from src.model import ProductDataDict, CustomerDataDict, OrderDataDict
 import os
+from pathlib import Path
 import json
 
 
@@ -44,7 +45,7 @@ def test_read_orders(orders_file: str, orders_data : list[OrderDataDict]) -> Non
     assert isinstance(data, list)
     assert all(isinstance(item, dict) for item in data)
 
-def text_write_product(tmpdir, products_data: list[ProductDataDict]) -> None:
+def test_write_product(tmpdir: Path, products_data: list[ProductDataDict]) -> None:
     writer = ProductJsonFileWriter()
     file_name = os.path.join(tmpdir, 'products_out.json')
     writer.write(file_name, products_data)
@@ -54,7 +55,7 @@ def text_write_product(tmpdir, products_data: list[ProductDataDict]) -> None:
     
     assert saved_data == products_data
 
-def test_write_customer(tmpdir, customers_data: list[CustomerDataDict]) -> None:
+def test_write_customer(tmpdir: Path, customers_data: list[CustomerDataDict]) -> None:
     writer = CustomerJsonFileWriter()
     file_name = os.path.join(tmpdir, 'customers_out.json')
     writer.write(file_name, customers_data)
@@ -64,14 +65,14 @@ def test_write_customer(tmpdir, customers_data: list[CustomerDataDict]) -> None:
     
     assert saved_data == customers_data
 
-# def test_write_order(tmpdir, orders_data: list[OrderDataDict]) -> None:
-#     writer = OrderJsonFileWriter()
-#     file_name = os.path.join(tmpdir, 'orders_out.json')
-#     writer.write(file_name, orders_data)
+def test_write_order(tmpdir: Path, orders_data: list[OrderDataDict]) -> None:
+    writer = OrderJsonFileWriter()
+    file_name = os.path.join(tmpdir, 'orders_out.json')
+    writer.write(file_name, orders_data)
 
-#     with open(file_name, 'r', encoding='utf-8') as file:
-#         saved_data = json.load(file)
+    with open(file_name, 'r', encoding='utf-8') as file:
+        saved_data = json.load(file)
     
-#     assert saved_data == orders_data
+    assert saved_data == orders_data
     
         

@@ -7,7 +7,7 @@ from src.file_service import (
     OrderJsonFileWriter
 )
 from src.model import ProductCategory, ShippingMethod
-from src.validator import Validator
+from src.validator import AbstractValidator
 from decimal import Decimal
 
 
@@ -45,30 +45,30 @@ def test_1() -> None:
     order_json_file_writer.write(file_name, orders)
 
 def test_2_validator() -> None:
-    print(Validator.is_valid_value_of("Standard", ProductCategory))
-    print(Validator.is_valid_value_of("Electronics", ProductCategory))
-    print(Validator.is_valid_value_of("Standard", ShippingMethod))
-    print(Validator.is_valid_value_of("Express", ShippingMethod))
-    print(Validator.is_valid_value_of("EXPREs", ShippingMethod))
+    print(AbstractValidator.is_valid_value_of("Standard", ProductCategory))
+    print(AbstractValidator.is_valid_value_of("Electronics", ProductCategory))
+    print(AbstractValidator.is_valid_value_of("Standard", ShippingMethod))
+    print(AbstractValidator.is_valid_value_of("Express", ShippingMethod))
+    print(AbstractValidator.is_valid_value_of("EXPREs", ShippingMethod))
 
 def test_3_email() -> None:
-    print(Validator.is_valid_email('jacek.hercog@gmail.com'))  
-    print(Validator.is_valid_email('jacek.hercog@gcc'))
+    print(AbstractValidator.is_valid_email('jacek.hercog@gmail.com'))  
+    print(AbstractValidator.is_valid_email('jacek.hercog@gcc'))
  
 def test_4_validete_int_and_decimal_in_range() -> None:
-    print(Validator.validate_int_in_range(1, 1, 10))
-    print(Validator.validate_int_in_range(0, 1, 10))
-    print(Validator.validate_int_in_range(11, 1, 10))
-    print(Validator.validate_int_in_range(-1, -1, 10))
-    print(Validator.validate_decimal_in_range('5.5', Decimal('1.0'), Decimal('10.0')))
-    print(Validator.validate_decimal_in_range('abc', Decimal('1.0'), Decimal('10.0')))
-    print(Validator.validate_decimal_in_range('5.5', Decimal('-1.0'), Decimal('10.0')))
+    print(AbstractValidator.validate_int_in_range(1, 1, 10))
+    print(AbstractValidator.validate_int_in_range(0, 1, 10))
+    print(AbstractValidator.validate_int_in_range(11, 1, 10))
+    print(AbstractValidator.validate_int_in_range(-1, -1, 10))
+    print(AbstractValidator.validate_decimal_in_range('5.5', Decimal('1.0'), Decimal('10.0')))
+    print(AbstractValidator.validate_decimal_in_range('abc', Decimal('1.0'), Decimal('10.0')))
+    print(AbstractValidator.validate_decimal_in_range('5.5', Decimal('-1.0'), Decimal('10.0')))
 
 def test_5_validate_string_with_regex() -> None:
-    print(Validator.validate_string_with_regex('1234567890', r'^\d{10}$'))
-    print(Validator.validate_string_with_regex('123456789', r'^\d{10}$'))
-    print(Validator.validate_string_with_regex('ALA', r'[A-Z]+'))
-    print(Validator.validate_string_with_regex('ALa', r'[A-Z]+'))
+    print(AbstractValidator.validate_string_with_regex('1234567890', r'^\d{10}$'))
+    print(AbstractValidator.validate_string_with_regex('123456789', r'^\d{10}$'))
+    print(AbstractValidator.validate_string_with_regex('ALA', r'[A-Z]+'))
+    print(AbstractValidator.validate_string_with_regex('ALa', r'[A-Z]+'))
 
 def main() -> None:
     # test_1()

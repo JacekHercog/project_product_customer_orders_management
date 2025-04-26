@@ -1,9 +1,13 @@
 from typing import override
 import json
+from abc import ABC
 
 from src.model import ProductDataDict, CustomerDataDict, OrderDataDict
 
-class FileReader[T]:
+class AbstractFileReader[T](ABC):
+    """
+    Abstract base class for FileReader.
+    """
 
     def read(self, file_name: str) -> list[T]:
         """
@@ -12,16 +16,19 @@ class FileReader[T]:
         with open(file_name, 'r', encoding='utf-8') as file:
             return json.load(file)    
         
-class ProductJsonFileReader(FileReader[ProductDataDict]):
+class ProductJsonFileReader(AbstractFileReader[ProductDataDict]):
     pass
 
-class CustomerJsonFileReader(FileReader[CustomerDataDict]):
+class CustomerJsonFileReader(AbstractFileReader[CustomerDataDict]):
     pass
 
-class OrderJsonFileReader(FileReader[OrderDataDict]):
+class OrderJsonFileReader(AbstractFileReader[OrderDataDict]):
    pass
 
-class FileWriter[T]:
+class AbstractFileWriter[T](ABC):
+    """
+    Abstract base class for FileWriter.
+    """
     def write(self, file_name: str, data: list[T]) -> None:
         """
         Write data to a file.
@@ -29,11 +36,11 @@ class FileWriter[T]:
         with open(file_name, 'w', encoding='utf-8') as file:
             json.dump(data, file, ensure_ascii=False, indent=4)
 
-class ProductJsonFileWriter(FileWriter[ProductDataDict]):
+class ProductJsonFileWriter(AbstractFileWriter[ProductDataDict]):
     pass
 
-class CustomerJsonFileWriter(FileWriter[CustomerDataDict]):
+class CustomerJsonFileWriter(AbstractFileWriter[CustomerDataDict]):
     pass    
 
-class OrderJsonFileWriter(FileWriter[OrderDataDict]):
+class OrderJsonFileWriter(AbstractFileWriter[OrderDataDict]):
     pass
