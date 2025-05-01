@@ -3,10 +3,7 @@ from unittest.mock import MagicMock
 from src.repository import (
     ProductDataRepository, CustomerDataRepository, OrderDataRepository
     )
-from src.model import (
-    Product, Customer, Order, ProductDataDict, CustomerDataDict, OrderDataDict
-)
-import logging
+
 
 @pytest.fixture
 def file_reader_mock() -> MagicMock:

@@ -3,27 +3,18 @@ import pytest
 import os
 import json
 
+@pytest.fixture
+def products_data(product_1_data: ProductDataDict, product_2_data: ProductDataDict) -> list[ProductDataDict]:
+    return [product_1_data, product_2_data]
 
 @pytest.fixture
-def products_data() -> list[ProductDataDict]:
-    return[
-        {"id": 1, "name": "Product A", "category": "Electronics", "price": "100"},
-        {"id": 2, "name": "Product B", "category": "Electronics", "price": "200"},
-    ]
+def customers_data(customer_1_data: CustomerDataDict, customer_2_data: CustomerDataDict) -> list[CustomerDataDict]:
+    return [customer_1_data, customer_2_data]
 
 @pytest.fixture
-def customers_data() -> list[CustomerDataDict]:
-    return [
-        {"id": 1, "first_name": "Person A", "last_name": "AA", "age": 30, "email": "personA@example.com"},
-        {"id": 2, "first_name": "Person B", "last_name": "BB", "age": 40, "email": "personB!@example.com"}
-    ]
-
-@pytest.fixture
-def orders_data() -> list[OrderDataDict]:
-    return [
-        {"id": 1, "customer_id": 1, "product_id": 1, "quantity": 2, "discount": "0.1", "shipping_method": "Standard"},
-        {"id": 2, "customer_id": 2, "product_id": 2, "quantity": 3, "discount": "0.2", "shipping_method": "Standard"},
-    ]
+def orders_data(
+    order_1_data: OrderDataDict, order_2_data: OrderDataDict, order_3_data: OrderDataDict) -> list[OrderDataDict]:
+    return [order_1_data, order_2_data, order_3_data]
 
 @pytest.fixture
 def products_file(tmpdir, products_data) -> str:

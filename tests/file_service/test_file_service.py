@@ -23,7 +23,7 @@ def test_read_products(products_file: str, products_data : list[ProductDataDict]
     data = reader.read(products_file)
     assert data == products_data
     assert len(data) == 2
-    assert data[0]['name'] == 'Product A'
+    assert data[0]['name'] == 'Laptop'
     assert isinstance(data, list)
     assert all(isinstance(item, dict) for item in data)
 
@@ -32,7 +32,7 @@ def test_read_customers(customers_file: str, customers_data : list[CustomerDataD
     data = reader.read(customers_file)
     assert data == customers_data
     assert len(data) == 2
-    assert data[0]['first_name'] == 'Person A'
+    assert data[0]['first_name'] == 'John'
     assert isinstance(data, list)
     assert all(isinstance(item, dict) for item in data)
    
@@ -40,7 +40,7 @@ def test_read_orders(orders_file: str, orders_data : list[OrderDataDict]) -> Non
     reader = OrderJsonFileReader()
     data = reader.read(orders_file)
     assert data == orders_data
-    assert len(data) == 2
+    assert len(data) == 3
     assert data[0]['customer_id'] == 1 
     assert isinstance(data, list)
     assert all(isinstance(item, dict) for item in data)
