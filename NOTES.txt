@@ -14,13 +14,13 @@ jako enum).
 Zrealizujemy komunikacje z plikami json, ktore przechowuja informacje na temat
 powyzszych struktur danych. Zastosujemy podejscie z poprzednich etapow naszej nauki,
 czyli wydzielimy:
-- model danych
-- walidacja danych
-- konwersja danych
-- repozytoria
-- repozystorium posrednie, ktore spina dane z repozytoriow ktore juz mamy i potem korzysta z niego service
+- [ DONE ] model danych
+- [ DONE ] walidacja danych
+- [ DONE ] konwersja danych
+- [ DONE ] repozytoria
+- [ DONE ] repozystorium posrednie, ktore spina dane z repozytoriow ktore juz mamy i potem korzysta z niego service
 - warstwa serwisowa (o niej powiemy pozniej)
-- testowanie
+- [ DONE ] testowanie
 
 W pierwszej kolejnosci pobierzemy dane ze wszystkich plikow. Potem pobrane dane
 zorganizujemy w formie dict, ktorego kluczem bedzie customer, a wartością będzie
@@ -33,3 +33,73 @@ danyc customer, bedacy kluczem.
         Product('B'): 2,
     }
 }
+
+---------------------------------------------------------------------------------------------------------------------
+Czy na tym etapie warto dzielic projekt na mniejsze modulu i paczki ?
+---------------------------------------------------------------------------------------------------------------------
+
+Przy aktualnej ilosci kodu mozna pozostać przy obecnej strukturze, czyli umieszczeniu wszystkiego w pojedynczych
+modułach, takich jak model.py, converter.py, file_service.py, repository.py, i validator.py. Taki podział jest
+w pełni wystarczający dla projektu tej skali i zapewnia czytelność oraz prostą organizację kodu.
+
+Zalety pozostania przy obecnej strukturze
+
+1. Czytelność i prostota: Obecny podział na pięć głównych modułów (model, converter, file_service, repository,
+validator) jest prosty, intuicyjny i wystarczający dla tego rozmiaru kodu.
+
+2. Łatwość w nawigacji: Przy jednym pliku na moduł jest łatwiej odnaleźć konkretną klasę lub funkcję, bez konieczności
+zagłębiania się w wiele podkatalogów i plików.
+
+3. Rozbudowa w przyszłości: W razie potrzeby łatwo można rozbudować tę strukturę. Jeśli projekt znacząco się rozrośnie,
+można wtedy wprowadzić podział na paczki i przenieść poszczególne klasy do dedykowanych plików.
+
+
+Kiedy rozważyć bardziej szczegółowy podział?
+
+1. Gdy kod znacząco się rozbuduje i każdy moduł zacznie zawierać wiele klas lub funkcji (np. więcej niż 500–1000 linii
+kodu w jednym pliku).
+
+2. Gdy potrzebujesz rozdzielić odpowiedzialności lub masz dodatkowe wymagania (np. różne implementacje tych samych
+klas abstrakcyjnych).
+
+3. Gdy projekt stanie się na tyle duży, że konieczne będzie ścisłe przestrzeganie zasad SOLID oraz separacji warstw.
+
+
+src/
+├── model/
+│   ├── __init__.py            # Inicjalizacja paczki i eksportowanie modeli
+│   ├── enums.py               # Definicje Enum: ProductCategory, ShippingMethod
+│   ├── customer.py            # Klasa Customer
+│   ├── product.py             # Klasa Product
+│   ├── order.py               # Klasa Order
+│   └── data_types.py          # Definicje typu słownikowego, np. ProductDataDict, CustomerDataDict, OrderDataDict
+│
+├── converter/
+│   ├── __init__.py            # Inicjalizacja paczki i eksportowanie konwerterów
+│   ├── base.py                # Klasa bazowa Converter
+│   ├── product_converter.py   # ProductConverter
+│   ├── customer_converter.py  # CustomerConverter
+│   └── order_converter.py     # OrderConverter
+│
+├── file_service/
+│   ├── __init__.py            # Inicjalizacja paczki
+│   ├── reader.py              # Definicje klas odczytujących JSON
+│   └── writer.py              # Definicje klas zapisujących JSON
+│
+├── repository/
+│   ├── __init__.py            # Inicjalizacja paczki
+│   ├── base_repository.py     # Klasa bazowa AbstractDataRepository
+│   ├── product_repository.py  # ProductDataRepository
+│   ├── customer_repository.py # CustomerDataRepository
+│   ├── order_repository.py    # OrderDataRepository
+│   └── purchase_summary_repository.py # PurchaseSummaryRepository
+│
+├── validator/
+│   ├── __init__.py            # Inicjalizacja paczki
+│   ├── base_validator.py      # Klasa bazowa AbstractValidator
+│   ├── product_validator.py   # ProductDataDictValidator
+│   ├── customer_validator.py  # CustomerDataDictValidator
+│   └── order_validator.py     # OrderDataDictValidator
+│
+└── __init__.py                # Główny punkt wejściowy modułu src, może eksportować główne klasy i paczki
+

@@ -16,9 +16,30 @@ from src.model import (
 logging.basicConfig(level=logging.INFO)
 
 @dataclass
-class AbstractValidator[T](ABC):
+class Validator[T]:
     """
     Abstract base class for validators.
+
+    Attributes:
+        required_fields (list[str]): A list of required fields for validation.
+
+    Methods:
+        validate(data: T) -> bool:
+            Validate the data against required fields.
+        has_required_keys(data: T, keys: list[str]) -> bool:
+            Check if the data contains all required fields.
+        is_positive(data: int | str) -> bool:
+            Check if the data is a positive number.
+        is_valid_value_of(value: str, enum_class: Type[Enum]) -> bool:
+            Check if the value is valid for a given enum class.
+        is_valid_email(email: str) -> bool:
+            Validate the email address format.
+        validate_int_in_range(value: int, min_value: int, max_value: int) -> bool:
+            Check if an integer is within a specified range.
+        validate_decimal_in_range(value: str, min_value: Decimal, max_value: Decimal) -> bool:
+            Check if a decimal value is within a specified range.
+        validate_string_with_regex(value: str, pattern: str) -> bool:
+            Validate a string against a given regex pattern.
     """
     required_fields: list[str] = field(default_factory=list)
                                        
@@ -114,9 +135,16 @@ class AbstractValidator[T](ABC):
         #     return False
 
 @dataclass    
-class ProductDataDictValidator(AbstractValidator[ProductDataDict]):
+class ProductDataDictValidator(Validator[ProductDataDict]):
     """
     Validator for product data.
+
+    Attributes:
+        required_fields (list[str]): A list of required fields for product validation.
+
+    Methods:
+        validate(data: ProductDataDict) -> bool:
+            Validate the product data, including checking if the price is positive.
     """
 
     def __post_init__(self) -> None:
@@ -131,13 +159,22 @@ class ProductDataDictValidator(AbstractValidator[ProductDataDict]):
         """
         Validate the product data.
         """
-        return super().validate(data) and AbstractValidator.is_positive(data["price"])
+        return super().validate(data) and Validator.is_positive(data["price"])
 
 
 @dataclass
-class CustomerDataDictValidator(AbstractValidator[CustomerDataDict]):
+class CustomerDataDictValidator(Validator[CustomerDataDict]):
     """
     Validator for customer data.
+
+    Attributes:
+        min_value (int): The minimum valid age for a customer.
+        max_value (int): The maximum valid age for a customer.
+        required_fields (list[str]): A list of required fields for customer validation.
+
+    Methods:
+        validate(data: CustomerDataDict) -> bool:
+            Validate the customer data, including checking if the age is within a valid range.
     """
     min_value: int = 0
     max_value: int = 65
@@ -155,14 +192,23 @@ class CustomerDataDictValidator(AbstractValidator[CustomerDataDict]):
         Validate the customer data.
         """
         return super().validate(data) and (
-            AbstractValidator.validate_int_in_range(int(data["age"]), self.min_value, self.max_value)  
+            self.validate_int_in_range(data["age"], self.min_value, self.max_value)  
             # and Validator.is_valid_email(data["email"])
         )
     
 @dataclass
-class OrderDataDictValidator(AbstractValidator[OrderDataDict]):
+class OrderDataDictValidator(Validator[OrderDataDict]):
     """
     Validator for order data.
+
+    Attributes:
+        min_discount (Decimal): The minimum valid discount value.
+        max_discount (Decimal): The maximum valid discount value.
+        required_fields (list[str]): A list of required fields for order validation.
+
+    Methods:
+        validate(data: OrderDataDict) -> bool:
+            Validate the order data, including checking if the discount is within a valid range.
     """
     min_discount: Decimal = Decimal('0.0')
     max_discount: Decimal = Decimal('1.0')
@@ -180,6 +226,6 @@ class OrderDataDictValidator(AbstractValidator[OrderDataDict]):
         Validate the order data.
         """
         return super().validate(data) and (
-            AbstractValidator.validate_decimal_in_range(str(data["discount"]), self.min_discount, self.max_discount)
+            self.validate_decimal_in_range(data["discount"], self.min_discount, self.max_discount)
             # and Validator.is_valid_value_of(data["shipping_method"], ShippingMethod)
         )
